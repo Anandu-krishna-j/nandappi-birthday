@@ -10,10 +10,11 @@
             padding: 0;
             box-sizing: border-box;
             font-family: 'Poppins', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            user-select: none;
         }
 
         body {
-            background: radial-gradient(circle at 50% 30%, #1a2a6c, #0b132b, #000000);
+            background-color: #0b132b;
             min-height: 100vh;
             display: flex;
             justify-content: center;
@@ -24,33 +25,96 @@
             padding: 15px;
         }
 
-        /* Night Sky & Moon Styling */
-        .moon {
+        /* ------------------------------------------------ */
+        /* FULLSCREEN BACKGROUND PHOTO LAYER (nandu.png)     */
+        /* ------------------------------------------------ */
+        .bg-photo-layer {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background-image: 
+                radial-gradient(circle at 50% 30%, rgba(26, 42, 108, 0.75), rgba(11, 19, 43, 0.88), rgba(0, 0, 0, 0.95)),
+                url('nandu.png');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            filter: brightness(0.7) contrast(1.1);
+            z-index: 0;
+            animation: bgZoom 15s ease-in-out infinite alternate;
+        }
+
+        @keyframes bgZoom {
+            0% { transform: scale(1); }
+            100% { transform: scale(1.06); }
+        }
+
+        /* Moon Wrapper for Parallax Effect */
+        .moon-container {
             position: absolute;
-            top: 50px;
-            width: 120px;
-            height: 120px;
+            top: 30px;
+            z-index: 5;
+            cursor: pointer;
+            transition: transform 0.1s ease-out;
+        }
+
+        /* Interactive Full Moon */
+        .moon {
+            width: 110px;
+            height: 110px;
             background: #fdfdff;
             border-radius: 50%;
             box-shadow: 
                 0 0 30px #ffffff,
                 0 0 60px #8a2be2,
                 0 0 100px #ff007f;
+            transition: all 0.4s ease;
+            position: relative;
             animation: moonGlow 4s infinite alternate ease-in-out;
-            z-index: 1;
         }
 
-        /* Moon Crater Details */
+        .moon:hover {
+            transform: scale(1.15);
+            box-shadow: 
+                0 0 50px #ffffff,
+                0 0 90px #00f2fe,
+                0 0 140px #ff007f;
+        }
+
+        .moon:active {
+            transform: scale(0.95);
+        }
+
         .moon::before {
             content: '';
             position: absolute;
-            top: 25px;
-            left: 20px;
-            width: 25px;
-            height: 25px;
+            top: 22px;
+            left: 18px;
+            width: 22px;
+            height: 22px;
             background: rgba(0, 0, 0, 0.08);
             border-radius: 50%;
-            box-shadow: 35px 20px 0 5px rgba(0, 0, 0, 0.05), 15px 45px 0 2px rgba(0, 0, 0, 0.06);
+            box-shadow: 30px 18px 0 4px rgba(0, 0, 0, 0.05), 12px 40px 0 2px rgba(0, 0, 0, 0.06);
+        }
+
+        .shockwave {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 110px;
+            height: 110px;
+            margin-left: -55px;
+            margin-top: -55px;
+            border-radius: 50%;
+            border: 3px solid rgba(255, 255, 255, 0.8);
+            pointer-events: none;
+            animation: ripple 0.8s ease-out forwards;
+        }
+
+        @keyframes ripple {
+            0% { transform: scale(1); opacity: 1; }
+            100% { transform: scale(3.5); opacity: 0; }
         }
 
         @keyframes moonGlow {
@@ -58,13 +122,26 @@
             to { box-shadow: 0 0 45px #ffffff, 0 0 80px #ff007f, 0 0 120px #8a2be2; }
         }
 
-        /* Floating Stars Background */
+        .moon-hint {
+            position: absolute;
+            bottom: -28px;
+            left: 50%;
+            transform: translateX(-50%);
+            white-space: nowrap;
+            font-size: 0.8rem;
+            color: #d1d5db;
+            background: rgba(0, 0, 0, 0.65);
+            padding: 3px 10px;
+            border-radius: 12px;
+            border: 1px solid rgba(255,255,255,0.2);
+            pointer-events: none;
+            animation: pulse 2s infinite;
+        }
+
         .stars-container {
             position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
             z-index: 2;
             overflow: hidden;
             pointer-events: none;
@@ -87,10 +164,9 @@
             text-align: center;
             width: 100%;
             max-width: 500px;
-            margin-top: 100px;
+            margin-top: 110px;
         }
 
-        /* Gift Box Section */
         .gift-box-wrapper {
             cursor: pointer;
             transition: transform 0.3s;
@@ -127,7 +203,9 @@
             50% { opacity: 1; }
         }
 
-        /* Card Section */
+        /* ------------------------------------------------ */
+        /* PHOTO LAYER & CARD STYLING                       */
+        /* ------------------------------------------------ */
         .card-container {
             display: none;
             margin-top: 10px;
@@ -135,29 +213,75 @@
         }
 
         .card {
-            background: rgba(255, 255, 255, 0.12);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
+            background: rgba(15, 20, 35, 0.65);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
             border-radius: 24px;
-            padding: 30px 20px;
-            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+            padding: 25px 20px;
+            box-shadow: 0 10px 40px 0 rgba(0, 0, 0, 0.6);
             border: 1px solid rgba(255, 255, 255, 0.25);
             position: relative;
         }
 
+        /* Profile Frame inside Card */
+        .photo-layer-container {
+            position: relative;
+            width: 130px;
+            height: 130px;
+            margin: 0 auto 15px auto;
+            border-radius: 50%;
+            padding: 5px;
+            background: linear-gradient(135deg, #ff758c, #ffbe0b, #4cc9f0);
+            box-shadow: 
+                0 0 20px rgba(255, 117, 140, 0.6),
+                0 0 40px rgba(76, 201, 240, 0.4);
+            transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            cursor: pointer;
+        }
+
+        .photo-layer-container:hover {
+            transform: scale(1.1) rotate(2deg);
+            box-shadow: 
+                0 0 30px rgba(255, 117, 140, 0.8),
+                0 0 50px rgba(255, 215, 0, 0.6);
+        }
+
+        .photo-frame {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            overflow: hidden;
+            border: 3px solid #ffffff;
+            background: #111827;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .photo-frame img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s ease;
+        }
+
+        .photo-layer-container:hover .photo-frame img {
+            transform: scale(1.12);
+        }
+
         h1 {
             color: #ffffff;
-            font-size: 1.8rem;
-            margin-bottom: 5px;
+            font-size: 1.6rem;
+            margin-bottom: 2px;
             letter-spacing: 1px;
         }
 
         .nickname {
             color: #ff758c;
-            font-size: 2.3rem;
+            font-size: 2.2rem;
             font-weight: 800;
             display: block;
-            margin-bottom: 15px;
+            margin-bottom: 12px;
             animation: glowText 2s ease-in-out infinite alternate;
         }
 
@@ -168,16 +292,15 @@
 
         p.message {
             color: #f1f5f9;
-            font-size: 1rem;
-            line-height: 1.6;
-            margin-bottom: 25px;
+            font-size: 0.95rem;
+            line-height: 1.5;
+            margin-bottom: 20px;
         }
 
-        /* Buttons Styling */
         .btn-group {
             display: flex;
             flex-direction: column;
-            gap: 12px;
+            gap: 10px;
             width: 100%;
         }
 
@@ -196,8 +319,8 @@
             background: linear-gradient(135deg, #ff758c 0%, #ff70a6 100%);
             color: white;
             border: none;
-            padding: 12px 20px;
-            font-size: 0.95rem;
+            padding: 11px 18px;
+            font-size: 0.9rem;
             font-weight: 600;
             border-radius: 30px;
             cursor: pointer;
@@ -209,55 +332,144 @@
             transform: scale(0.96);
         }
 
-        /* Modal / Surprise Popup */
+        /* ------------------------------------------------ */
+        /* SECRET WISH MODAL STYLES                         */
+        /* ------------------------------------------------ */
         .modal {
             display: none;
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0, 0, 0, 0.75);
+            background: rgba(5, 7, 20, 0.85);
+            backdrop-filter: blur(8px);
             z-index: 100;
             justify-content: center;
             align-items: center;
             padding: 20px;
+            perspective: 1000px;
         }
 
         .modal-content {
-            background: #111827;
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            padding: 25px;
-            border-radius: 20px;
-            max-width: 350px;
+            background: linear-gradient(145deg, rgba(25, 20, 45, 0.92), rgba(15, 10, 30, 0.96));
+            border: 2px solid rgba(255, 117, 140, 0.5);
+            padding: 35px 25px 30px 25px;
+            border-radius: 30px;
+            max-width: 380px;
             width: 100%;
             text-align: center;
             position: relative;
-            animation: popIn 0.4s ease;
+            box-shadow: 
+                0 0 30px rgba(255, 117, 140, 0.3),
+                0 0 60px rgba(138, 43, 226, 0.2),
+                inset 0 0 20px rgba(255, 255, 255, 0.05);
+            transform-style: preserve-3d;
+            animation: magicPop 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+            overflow: hidden;
+        }
+
+        .modal-content::before {
+            content: '';
+            position: absolute;
+            top: -50%; left: -50%; width: 200%; height: 200%;
+            background: conic-gradient(transparent, rgba(255, 117, 140, 0.3), transparent 30%);
+            animation: rotateGlow 6s linear infinite;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        @keyframes rotateGlow {
+            100% { transform: rotate(360deg); }
+        }
+
+        .modal-inner {
+            position: relative;
+            z-index: 2;
         }
 
         .close-btn {
             position: absolute;
-            top: 10px;
-            right: 15px;
-            font-size: 22px;
+            top: 12px;
+            right: 18px;
+            font-size: 24px;
             cursor: pointer;
-            color: #aaa;
+            color: #ff758c;
+            transition: transform 0.2s, color 0.2s;
+            z-index: 3;
         }
 
-        @keyframes popIn {
-            0% { transform: scale(0.7); opacity: 0; }
-            100% { transform: scale(1); opacity: 1; }
+        .close-btn:hover {
+            color: #fff;
+            transform: scale(1.2) rotate(90deg);
         }
 
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
+        .wish-icon {
+            font-size: 50px;
+            margin-bottom: 8px;
+            display: inline-block;
+            animation: pulseIcon 2s infinite ease-in-out;
+            filter: drop-shadow(0 0 10px rgba(255, 215, 0, 0.6));
         }
 
-        /* Falling Particles Animation */
+        @keyframes pulseIcon {
+            0%, 100% { transform: scale(1) rotate(0deg); }
+            50% { transform: scale(1.15) rotate(5deg); }
+        }
+
+        .wish-title {
+            background: linear-gradient(90deg, #ff758c, #ffbe0b, #4cc9f0);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-size: 1.4rem;
+            font-weight: 800;
+            margin-bottom: 10px;
+        }
+
+        .wish-text {
+            color: #e2e8f0;
+            line-height: 1.6;
+            font-size: 0.95rem;
+            margin-bottom: 18px;
+            background: rgba(255, 255, 255, 0.05);
+            padding: 15px;
+            border-radius: 15px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .action-wish-btn {
+            background: linear-gradient(135deg, #ff007f 0%, #7928ca 100%);
+            color: white;
+            border: none;
+            padding: 11px 24px;
+            font-size: 0.9rem;
+            font-weight: 700;
+            border-radius: 50px;
+            cursor: pointer;
+            box-shadow: 0 0 15px rgba(255, 0, 127, 0.5);
+            transition: all 0.3s ease;
+        }
+
+        .action-wish-btn:hover {
+            box-shadow: 0 0 25px rgba(255, 0, 127, 0.8);
+            transform: translateY(-2px);
+        }
+
+        .wish-status {
+            margin-top: 10px;
+            font-size: 0.85rem;
+            color: #4cc9f0;
+            height: 20px;
+            font-weight: 600;
+        }
+
+        @keyframes magicPop {
+            0% { transform: scale(0.3) rotateY(90deg); opacity: 0; }
+            100% { transform: scale(1) rotateY(0deg); opacity: 1; }
+        }
+
         .particle {
             position: fixed;
             pointer-events: none;
             animation: fall 3.5s linear forwards;
-            z-index: 99;
+            z-index: 999;
         }
 
         @keyframes fall {
@@ -267,38 +479,35 @@
             }
         }
 
-        /* Responsive Moon Sizing for Mobile Screens */
         @media (max-width: 480px) {
-            .moon {
-                width: 90px;
-                height: 90px;
-                top: 30px;
-            }
-            .gift-emoji {
-                font-size: 70px;
-            }
-            h1 {
-                font-size: 1.5rem;
-            }
-            .nickname {
-                font-size: 2rem;
-            }
-            p.message {
-                font-size: 0.95rem;
-            }
+            .moon, .shockwave { width: 90px; height: 90px; }
+            .shockwave { margin-left: -45px; margin-top: -45px; }
+            .moon-container { top: 20px; }
+            .container { margin-top: 90px; }
+            .gift-emoji { font-size: 70px; }
+            .photo-layer-container { width: 110px; height: 110px; }
+            h1 { font-size: 1.4rem; }
+            .nickname { font-size: 1.9rem; }
+            p.message { font-size: 0.9rem; }
         }
     </style>
 </head>
 <body>
 
-    <!-- Full Moon -->
-    <div class="moon"></div>
+    <!-- Ambient Background Photo Layer -->
+    <div class="bg-photo-layer"></div>
 
-    <!-- Background Stars Generated dynamically -->
+    <!-- Interactive Moon -->
+    <div class="moon-container" id="moonContainer" onclick="interactMoon(event)">
+        <div class="moon" id="moon"></div>
+        <div class="moon-hint">Tap the Moon! 🌙</div>
+    </div>
+
+    <!-- Background Stars -->
     <div class="stars-container" id="starsContainer"></div>
 
     <div class="container">
-        <!-- Initial Gift Box View -->
+        <!-- Gift Box Section -->
         <div id="gift-section">
             <div class="gift-box-wrapper" onclick="openGift()">
                 <div class="gift-emoji">🎁</div>
@@ -306,9 +515,17 @@
             <div class="click-hint">✨ Tap the Gift under the Moonlight, Nandappi! ✨</div>
         </div>
 
-        <!-- Hidden Birthday Card -->
+        <!-- Birthday Card -->
         <div class="card-container" id="card-section">
             <div class="card">
+                
+                <!-- Profile Frame -->
+                <div class="photo-layer-container" onclick="photoClickEffect()">
+                    <div class="photo-frame">
+                        <img src="nandu.png" alt="Nandappi" id="nanduPhoto" onerror="this.src='nandu.jpeg'">
+                    </div>
+                </div>
+
                 <h1>Happy Birthday!</h1>
                 <span class="nickname">Nandappi 🌙✨</span>
                 
@@ -327,19 +544,24 @@
         </div>
     </div>
 
-    <!-- Secret Wish Modal -->
+    <!-- Animated Secret Wish Modal -->
     <div class="modal" id="wishModal">
         <div class="modal-content">
             <span class="close-btn" onclick="closeModal()">&times;</span>
-            <h2 style="color: #ff758c; margin-bottom: 12px; font-size: 1.3rem;">A Midnight Wish For You 🌌</h2>
-            <p style="color: #d1d5db; line-height: 1.5; font-size: 0.95rem;">
-                "May all your dreams sparkle like the stars and come true this year, Nandappi! Always keep shining bright!" 🌟😊
-            </p>
+            <div class="modal-inner">
+                <div class="wish-icon">🔮</div>
+                <h2 class="wish-title">A Midnight Wish For You</h2>
+                <div class="wish-text">
+                    "May all your wildest dreams sparkle like the stars and come true this year, <strong>Nandappi</strong>! Always keep smiling and shining bright!" ✨🌙
+                </div>
+                <button class="action-wish-btn" onclick="grantWish()">Make a Wish ✨</button>
+                <div class="wish-status" id="wishStatus"></div>
+            </div>
         </div>
     </div>
 
     <script>
-        // Dynamically generate background twinkling stars
+        // Generate stars background
         const starsContainer = document.getElementById('starsContainer');
         for (let i = 0; i < 60; i++) {
             const star = document.createElement('div');
@@ -353,14 +575,35 @@
             starsContainer.appendChild(star);
         }
 
+        // Parallax effect
+        const moonContainer = document.getElementById('moonContainer');
+        window.addEventListener('mousemove', (e) => {
+            const moveX = (e.clientX - window.innerWidth / 2) * 0.03;
+            const moveY = (e.clientY - window.innerHeight / 2) * 0.03;
+            moonContainer.style.transform = `translate(${moveX}px, ${moveY}px)`;
+        });
+
+        function interactMoon(event) {
+            const wave = document.createElement('div');
+            wave.classList.add('shockwave');
+            moonContainer.appendChild(wave);
+            setTimeout(() => wave.remove(), 800);
+            createStardust(15);
+        }
+
         function openGift() {
             document.getElementById('gift-section').style.display = 'none';
             document.getElementById('card-section').style.display = 'block';
             createStardust(40);
         }
 
+        function photoClickEffect() {
+            createHearts(20);
+            createStardust(20);
+        }
+
         function createStardust(count = 25) {
-            const sparkles = ['✨', '⭐', '🌟', '💫', '🌕'];
+            const sparkles = ['✨', '⭐', '🌟', '💫', '🌕', '🌙'];
             for (let i = 0; i < count; i++) {
                 const particle = document.createElement('div');
                 particle.classList.add('particle');
@@ -375,8 +618,8 @@
             }
         }
 
-        function createHearts() {
-            for (let i = 0; i < 20; i++) {
+        function createHearts(count = 20) {
+            for (let i = 0; i < count; i++) {
                 const heart = document.createElement('div');
                 heart.classList.add('particle');
                 heart.innerHTML = '💖';
@@ -391,12 +634,21 @@
         }
 
         function showSurprise() {
-            document.getElementById('wishModal').style.display = 'flex';
-            createStardust(20);
+            const modal = document.getElementById('wishModal');
+            document.getElementById('wishStatus').innerText = "";
+            modal.style.display = 'flex';
+            createStardust(25);
         }
 
         function closeModal() {
             document.getElementById('wishModal').style.display = 'none';
+        }
+
+        function grantWish() {
+            createStardust(45);
+            createHearts(15);
+            const status = document.getElementById('wishStatus');
+            status.innerText = "🌟 Wish Sent to the Universe! 🌟";
         }
 
         window.onclick = function(event) {
